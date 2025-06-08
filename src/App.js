@@ -76,16 +76,42 @@ function App() {
   };
   
   const formatAddress = () => {
-    return `${address.street}, ${address.number}
-${address.complement ? address.complement + '\n' : ''}${address.neighborhood}
-${address.city} - ${address.state}
+    return `Logradouro: ${address.street}
+Número: ${address.number}
+${address.complement ? `Complemento: ${address.complement}\n` : ''}Bairro: ${address.neighborhood}
+Cidade: ${address.city}
+Estado: ${address.state}
 CEP: ${address.cep}`;
+  };
+  
+  // Renderizar partículas de fundo
+  const renderParticles = () => {
+    const particles = [];
+    for (let i = 0; i < 15; i++) {
+      const size = Math.random() * 10 + 5;
+      const style = {
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        width: `${size}px`,
+        height: `${size}px`,
+        backgroundColor: `rgba(${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 0.2)`,
+        animationDuration: `${Math.random() * 10 + 5}s`,
+        animationDelay: `${Math.random() * 5}s`
+      };
+      particles.push(<div key={i} className="particle" style={style}></div>);
+    }
+    return particles;
   };
   
   return (
     <div className="app-container">
+      <div className="particles">
+        {renderParticles()}
+      </div>
+      
       <header>
-        <h1>Endereçador QR Code</h1>
+        <h1>Gerador de QR Code para Endereços</h1>
+        <p className="subtitle">Crie QR Codes para facilitar o endereçamento de correspondências</p>
       </header>
       
       <main>
@@ -200,14 +226,31 @@ CEP: ${address.cep}`;
             <h2>QR Code Gerado</h2>
             <div className="qr-container">
               <QRCodeCanvas 
-                value={JSON.stringify(address)} 
+                value={formatAddress()} 
                 size={200}
                 level="H"
+                bgColor="#FFFFFF"
+                fgColor="#000000"
+                includeMargin={true}
               />
             </div>
             <div className="address-display">
               <h3>Endereço Formatado:</h3>
-              <p>{formatAddress()}</p>
+              <div className="formatted-address">
+                <p><strong>Logradouro:</strong> {address.street}</p>
+                <p><strong>Número:</strong> {address.number}</p>
+                {address.complement && <p><strong>Complemento:</strong> {address.complement}</p>}
+                <p><strong>Bairro:</strong> {address.neighborhood}</p>
+                <p><strong>Cidade:</strong> {address.city}</p>
+                <p><strong>Estado:</strong> {address.state}</p>
+                <p><strong>CEP:</strong> {address.cep}</p>
+              </div>
+              <button 
+                onClick={() => window.print()} 
+                className="print-button"
+              >
+                Imprimir QR Code
+              </button>
             </div>
           </div>
         )}
